@@ -1,0 +1,18 @@
+version: '3.9'
+
+services:
+  filebeat:
+    image: beats/filebeat:${VERSION}
+    container_name: ${SERVICE_NAME}_filebeat
+    hostname: filebeat
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      - LOGSTASH_HOSTS=${LOGSTASH_HOSTS}
+    volumes:
+      - ./filebeat.docker.yml:/usr/share/filebeat/filebeat.yml:ro
+      - ../kyc_api/apm_agent/trace_logs:/var/log/filebeat/kyc_api:ro
+      - ../kyc_challenge_pose/apm_agent/trace_logs:/var/log/filebeat/kyc_challenge_pose:ro
+      - ../kyc_face_verification/apm_agent/trace_logs:/var/log/filebeat/kyc_face_verification:ro
+      - ../kyc_frame_extraction/apm_agent/trace_logs:/var/log/filebeat/kyc_frame_extraction:ro
+      - ../kyc_liveness_detection/apm_agent/trace_logs:/var/log/filebeat/kyc_liveness_detection:ro

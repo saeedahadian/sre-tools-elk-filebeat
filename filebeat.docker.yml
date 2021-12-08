@@ -1,0 +1,33 @@
+filebeat.config:
+  modules:
+    path: ./modules.d/*.yml
+    reload.enabled: false
+
+filebeat.inputs:
+- type: filestream
+  enabled: true
+  paths:
+    - '/var/log/filebeat/**/*.log'
+  exclude_lines: ['^ERR']
+
+output.logstash:
+  enabled: true
+  hosts: 
+    - "${LOGSTASH_HOSTS:ai-monitoring.emofid.com}:9202"
+    - "${LOGSTASH_HOSTS:ai-monitoring.emofid.com}:9203"
+  loadbalance: true
+  worker: 2
+  compression_level: 3
+  escape_html: false
+  ssl.enabled: false
+
+  #output.console:
+  #  pretty: true
+
+processors:
+  - add_fields:
+      target: 'service'
+      fields:
+        name: ${SERVICE_NAME}
+        version: ''
+        environment: 'staging'
