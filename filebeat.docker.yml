@@ -13,8 +13,8 @@ filebeat.inputs:
 output.logstash:
   enabled: true
   hosts: 
-    - "${LOGSTASH_HOSTS:ai-monitoring.emofid.com}:9202"
-    - "${LOGSTASH_HOSTS:ai-monitoring.emofid.com}:9203"
+    - "${LOGSTASH_HOST:logstash-host.com}:9202"
+    - "${LOGSTASH_HOST:logstash-host.com}:9203"
   loadbalance: true
   worker: 2
   compression_level: 3
@@ -29,5 +29,5 @@ processors:
       target: 'service'
       fields:
         name: ${SERVICE_NAME}
-        version: ''
-        environment: 'staging'
+        version: ${SERVICE_VERSION} 
+        environment: ${SERVICE_ENVIRONMENT}
